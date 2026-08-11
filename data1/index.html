@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>신소재 및 재료공학 관련 학과 현황 분석 보고서</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Noto Sans KR"', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#1e3a8a',
+                        secondary: '#3b82f6',
+                        accent: '#f59e0b',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Noto Sans KR', sans-serif; background-color: #f8fafc; }
+        .nav-link { transition: all 0.2s ease-in-out; }
+        .nav-link:hover { color: #2563eb; background-color: #eff6ff; }
+        .section-card { background: white; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03); padding: 2rem; margin-bottom: 2rem; }
+        html { scroll-behavior: smooth; scroll-padding-top: 2rem; }
+    </style>
+</head>
+<body class="text-slate-800 antialiased">
+
+    <!-- Header -->
+    <header class="bg-primary text-white py-12 px-6 shadow-md">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="text-secondary font-semibold tracking-wide uppercase text-sm mb-2">고등교육 정책 및 산업 연계 전략 수립을 위한</h2>
+            <h1 class="text-3xl md:text-4xl font-bold leading-tight mb-4">대한민국 대학 신소재 및 재료공학 관련 학과 현황 분석 보고서</h1>
+            <p class="text-blue-100 opacity-90 max-w-2xl">지산학 연계(Local-Industry-Academic linkage) 및 학제 개편(Restructuring) 트렌드 중심 분석</p>
+        </div>
+    </header>
+
+    <div class="max-w-7xl mx-auto px-6 py-8 flex flex-col md:flex-row gap-8">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="w-full md:w-64 flex-shrink-0">
+            <div class="sticky top-8 bg-white p-4 rounded-xl shadow-sm border border-slate-100">
+                <h3 class="font-bold text-slate-800 mb-4 px-3">목차</h3>
+                <nav class="flex flex-col space-y-1">
+                    <a href="#overview" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-slate-600">1. 분석 개요 및 데이터 구성</a>
+                    <a href="#establishment" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-slate-600">2. 설립 구분별 학과 현황</a>
+                    <a href="#region" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-slate-600">3. 지역별 설치 및 분포</a>
+                    <a href="#keywords" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-slate-600">4. 학과명 키워드 특성화</a>
+                    <a href="#operations" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-slate-600">5. 학과 상태 및 운영 특성</a>
+                    <a href="#conclusion" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-slate-600">6. 종합 결론 및 시사점</a>
+                </nav>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1">
+            
+            <!-- 1. 분석 개요 -->
+            <section id="overview" class="section-card">
+                <h2 class="text-2xl font-bold text-primary mb-6 flex items-center">
+                    <span class="bg-blue-100 text-blue-800 w-8 h-8 flex items-center justify-center rounded-full mr-3 text-lg">1</span>
+                    분석 개요 및 데이터 구성
+                </h2>
+                <p class="mb-4 text-slate-600 leading-relaxed">본 보고서는 국내 대학의 신소재 및 재료공학 관련 학과 운영 현황을 진단하고, 이를 바탕으로 고등교육 정책 및 산업 연계 전략 수립을 위한 기초 자료를 제공하는 데 목적이 있습니다.</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                    <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                        <h4 class="font-bold text-slate-700 mb-2">📊 데이터 출처</h4>
+                        <p class="text-sm text-slate-600">제공된 <strong>110개</strong> 학과 레코드 전수 조사</p>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                        <h4 class="font-bold text-slate-700 mb-2">📐 분석 축</h4>
+                        <p class="text-sm text-slate-600">설립 구분(국립·사립 등), 학교 지역(17개 시도), 학과명 키워드</p>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                        <h4 class="font-bold text-slate-700 mb-2">🎯 보고서 특징</h4>
+                        <p class="text-sm text-slate-600">단순 통계를 넘어 '지산학 연계' 및 '학제 개편' 트렌드 반영</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. 설립 구분 -->
+            <section id="establishment" class="section-card">
+                <h2 class="text-2xl font-bold text-primary mb-6 flex items-center">
+                    <span class="bg-blue-100 text-blue-800 w-8 h-8 flex items-center justify-center rounded-full mr-3 text-lg">2</span>
+                    설립 구분별 학과 분포 현황
+                </h2>
+                <p class="mb-6 text-slate-600 leading-relaxed">신소재 및 재료공학 분야는 국가 전략 산업의 기반이 되는 만큼 국립계열의 비중이 타 전공 대비 높게 나타나며, 동시에 사립대학의 양적 팽창이 뚜렷합니다.</p>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <table class="w-full text-sm text-left text-slate-500 border border-slate-200 rounded-lg overflow-hidden">
+                            <thead class="text-xs text-slate-700 uppercase bg-slate-100">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3">설립 유형</th>
+                                    <th scope="col" class="px-6 py-3 text-right">학과 수</th>
+                                    <th scope="col" class="px-6 py-3 text-right">비중(%)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="bg-white border-b hover:bg-slate-50">
+                                    <td class="px-6 py-4 font-medium text-slate-900">사립</td><td class="px-6 py-4 text-right">63</td><td class="px-6 py-4 text-right">57.3%</td>
+                                </tr>
+                                <tr class="bg-white border-b hover:bg-slate-50">
+                                    <td class="px-6 py-4 font-medium text-slate-900">국립</td><td class="px-6 py-4 text-right">41</td><td class="px-6 py-4 text-right">37.3%</td>
+                                </tr>
+                                <tr class="bg-white border-b hover:bg-slate-50">
+                                    <td class="px-6 py-4 font-medium text-slate-900">특별법법인</td><td class="px-6 py-4 text-right">3</td><td class="px-6 py-4 text-right">2.7%</td>
+                                </tr>
+                                <tr class="bg-white border-b hover:bg-slate-50">
+                                    <td class="px-6 py-4 font-medium text-slate-900">국립대법인</td><td class="px-6 py-4 text-right">2</td><td class="px-6 py-4 text-right">1.8%</td>
+                                </tr>
+                                <tr class="bg-white hover:bg-slate-50">
+                                    <td class="px-6 py-4 font-medium text-slate-900">공립</td><td class="px-6 py-4 text-right">1</td><td class="px-6 py-4 text-right">0.9%</td>
+                                </tr>
+                            </tbody>
+                            <tfoot class="bg-slate-50 font-bold">
+                                <tr>
+                                    <td class="px-6 py-3 text-slate-900">합계</td><td class="px-6 py-3 text-right">110</td><td class="px-6 py-3 text-right">100.0%</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    <div class="h-64 flex justify-center">
+                        <canvas id="typeChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="mt-6 bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg">
+                    <h4 class="font-bold text-blue-900 mb-1">분석 인사이트</h4>
+                    <p class="text-sm text-blue-800 leading-relaxed">
+                        사립대학이 전체의 57.3%를 점유하며 교육 공급의 과반을 담당하고 있습니다. 주목할 점은 국립, 국립대법인, 특별법법인을 포함한 <strong>공적 영역의 비중이 약 42%</strong>에 달한다는 점입니다.<br>
+                        특징적으로 국립대학교는 '금속', '세라믹' 등 산업의 토대가 되는 <strong>'뿌리기술' 보전의 공적 역할</strong>을 수행하는 반면, 사립대학은 <strong>첨단 산업 융합형 학과 브랜드 구축</strong>에 주력하는 이원화 현상이 관찰됩니다.
+                    </p>
+                </div>
+            </section>
+
+            <!-- 3. 지역별 현황 -->
+            <section id="region" class="section-card">
+                <h2 class="text-2xl font-bold text-primary mb-6 flex items-center">
+                    <span class="bg-blue-100 text-blue-800 w-8 h-8 flex items-center justify-center rounded-full mr-3 text-lg">3</span>
+                    지역별 설치 현황 및 지리적 분포 분석
+                </h2>
+                <p class="mb-4 text-slate-600 leading-relaxed">전국 17개 시도별 분포를 분석한 결과, 수도권과 비수도권 간의 학제 운영 전략 차이가 명확히 드러납니다.</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <div class="space-y-4">
+                        <div class="p-4 border border-slate-100 bg-white rounded-lg shadow-sm hover:shadow-md transition">
+                            <h4 class="font-bold text-slate-800 text-lg">서울 (25개) <span class="text-xs font-normal bg-slate-100 px-2 py-1 rounded ml-2">수도권</span></h4>
+                            <p class="text-sm text-slate-600 mt-1">고려대, 연세대, 한양대 등 주요 대학 밀집. 연구 중심의 대규모 학부 운영.</p>
+                        </div>
+                        <div class="p-4 border border-slate-100 bg-white rounded-lg shadow-sm hover:shadow-md transition">
+                            <h4 class="font-bold text-slate-800 text-lg">경기 (14개) <span class="text-xs font-normal bg-slate-100 px-2 py-1 rounded ml-2">수도권</span></h4>
+                            <p class="text-sm text-slate-600 mt-1">한양대(ERICA), 아주대, 한국항공대 등. 반도체/항공 산업 단지 연계 지산학 모델.</p>
+                        </div>
+                        <div class="p-4 border border-slate-100 bg-white rounded-lg shadow-sm hover:shadow-md transition">
+                            <h4 class="font-bold text-slate-800 text-lg">충남 (10개) <span class="text-xs font-normal bg-accent px-2 py-1 rounded ml-2 text-white">비수도권</span></h4>
+                            <p class="text-sm text-slate-600 mt-1">국립공주대, 단국대(제2캠퍼스) 등 중심. 제조 및 디스플레이 산업 배후지 특성 반영.</p>
+                        </div>
+                        <div class="p-4 border border-slate-100 bg-white rounded-lg shadow-sm hover:shadow-md transition">
+                            <h4 class="font-bold text-slate-800 text-lg">경북 (8개) / 경남 (8개) <span class="text-xs font-normal bg-accent px-2 py-1 rounded ml-2 text-white">비수도권</span></h4>
+                            <p class="text-sm text-slate-600 mt-1">국가 산업 단지(철강/기계/금속) 지원 핵심 거점 (국립경국대, 포항공대, 국립창원대 등).</p>
+                        </div>
+                    </div>
+                    <div class="flex flex-col items-center justify-center bg-slate-50 rounded-xl p-6">
+                        <h4 class="font-bold text-slate-700 mb-4 text-center">수도권 vs 비수도권 비중</h4>
+                        <div class="w-full max-w-xs">
+                            <canvas id="regionChart"></canvas>
+                        </div>
+                        <p class="text-sm text-slate-600 mt-6 text-center leading-relaxed">
+                            비수도권 비중이 <strong>62.7%</strong>로 압도적인 이유는 신소재공학이 철강, 조선, 반도체 등 <strong>지역 주력 산업과 직결</strong>되어 있기 때문입니다.<br>이는 지역 소멸 대응 전략(RIS 사업 등)에서 핵심 자산임을 시사합니다.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. 키워드 특성화 -->
+            <section id="keywords" class="section-card">
+                <h2 class="text-2xl font-bold text-primary mb-6 flex items-center">
+                    <span class="bg-blue-100 text-blue-800 w-8 h-8 flex items-center justify-center rounded-full mr-3 text-lg">4</span>
+                    학과명 키워드 분석 및 특성화 트렌드
+                </h2>
+                <p class="mb-6 text-slate-600 leading-relaxed">산업계의 수요 변화에 대응하기 위해 고도의 학제 통합과 특성화가 진행되고 있습니다.</p>
+
+                <div class="space-y-6">
+                    <div class="border-l-2 border-secondary pl-4">
+                        <h4 class="font-bold text-lg text-slate-800 mb-2 flex items-center gap-2">
+                            <span class="bg-blue-100 text-blue-700 px-2 py-1 rounded text-xs">트렌드 1</span> 첨단 산업 융합
+                        </h4>
+                        <p class="text-slate-600 text-sm mb-2">차세대 모빌리티와 에너지 소자의 핵심 기술 선점을 위한 응용 학문으로의 진화.</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm font-medium">반도체 (한양대 ERICA, 한국항공대)</span>
+                            <span class="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm font-medium">디스플레이 (순천향대)</span>
+                            <span class="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm font-medium">에너지 (건국대 글로컬, 국민대)</span>
+                            <span class="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm font-medium">나노 (경북대, 세종대)</span>
+                        </div>
+                    </div>
+
+                    <div class="border-l-2 border-green-500 pl-4">
+                        <h4 class="font-bold text-lg text-slate-800 mb-2 flex items-center gap-2">
+                            <span class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs">트렌드 2</span> 학제 간 통합 및 다각화
+                        </h4>
+                        <p class="text-slate-600 text-sm mb-2">이차전지, 고분자, 자연과학, 보건 분야와의 융합 시너지 창출.</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-3 py-1 bg-green-50 text-green-700 border border-green-200 rounded-full text-sm">화학공학 통합 (이화여대, 홍익대, 상명대)</span>
+                            <span class="px-3 py-1 bg-green-50 text-green-700 border border-green-200 rounded-full text-sm">환경 융합 (경상국립대)</span>
+                            <span class="px-3 py-1 bg-green-50 text-green-700 border border-green-200 rounded-full text-sm">바이오/의료 (경희대, 건양대, 한림대)</span>
+                        </div>
+                    </div>
+
+                    <div class="border-l-2 border-orange-500 pl-4">
+                        <h4 class="font-bold text-lg text-slate-800 mb-2 flex items-center gap-2">
+                            <span class="bg-orange-100 text-orange-700 px-2 py-1 rounded text-xs">트렌드 3</span> 전통 기반 유지 (뿌리기술)
+                        </h4>
+                        <p class="text-slate-600 text-sm mb-2">국가 산업의 기초를 지탱하는 원천 소재 기술 교육 유지.</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-3 py-1 bg-orange-50 text-orange-700 border border-orange-200 rounded-full text-sm">금속/재료 (경북대, 국립창원대)</span>
+                            <span class="px-3 py-1 bg-orange-50 text-orange-700 border border-orange-200 rounded-full text-sm">세라믹 (강원대 제3캠퍼스)</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. 학과 상태 및 운영 -->
+            <section id="operations" class="section-card">
+                <h2 class="text-2xl font-bold text-primary mb-6 flex items-center">
+                    <span class="bg-blue-100 text-blue-800 w-8 h-8 flex items-center justify-center rounded-full mr-3 text-lg">5</span>
+                    학과 상태 및 운영 특성 분석
+                </h2>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-slate-50 p-6 rounded-xl border border-slate-200">
+                        <div class="text-3xl mb-3">🔄</div>
+                        <h4 class="font-bold text-lg text-slate-800 mb-2">역동적 학제 개편</h4>
+                        <p class="text-sm text-slate-600 mb-3">산업 수요 급변에 따라 지자체 특화형 전공 신설 및 개편 활발</p>
+                        <ul class="text-sm text-slate-600 space-y-2 list-disc list-inside">
+                            <li><strong>강원대(삼척/강릉):</strong> 세라믹신소재, 화학신소재 등 대거 신설</li>
+                            <li><strong>경상국립대:</strong> 인테리어재료공학, 항노화신소재과학 등 독창적 지역 특성화</li>
+                        </ul>
+                    </div>
+                    <div class="bg-slate-50 p-6 rounded-xl border border-slate-200">
+                        <div class="text-3xl mb-3">☀️</div>
+                        <h4 class="font-bold text-lg text-slate-800 mb-2">주야 구분: 100% 주간 운영</h4>
+                        <p class="text-sm text-slate-600">분석 대상 110개 학과 전체가 '주간' 과정으로 운영됨.</p>
+                        <p class="text-sm text-slate-500 mt-2 bg-white p-3 rounded border border-slate-100">
+                            💡 공학 계열 특유의 고도화된 실험·실습 환경 요구 및 연구 몰입도 유지를 위한 학사 운영 방침의 결과로 분석됨.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 6. 종합 결론 -->
+            <section id="conclusion" class="section-card bg-slate-800 text-white border-none">
+                <h2 class="text-2xl font-bold text-white mb-6 flex items-center">
+                    <span class="bg-blue-500 text-white w-8 h-8 flex items-center justify-center rounded-full mr-3 text-lg">6</span>
+                    종합 결론 및 시사점
+                </h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-slate-700/50 p-5 rounded-lg">
+                        <h4 class="font-bold text-blue-300 text-lg mb-2">1. 비수도권 중심 지산학 생태계</h4>
+                        <p class="text-slate-300 text-sm leading-relaxed">전체 학과의 63%가 비수도권에 분포. 지역 거점 국립대를 중심으로 구축된 산업 밀착형 교육망은 지역 혁신 성장의 핵심 동력으로 작용함.</p>
+                    </div>
+                    
+                    <div class="bg-slate-700/50 p-5 rounded-lg">
+                        <h4 class="font-bold text-blue-300 text-lg mb-2">2. 공공과 민간의 역할 분담</h4>
+                        <p class="text-slate-300 text-sm leading-relaxed">국립계열은 원천 기술(금속, 세라믹) 보존에, 사립계열은 고부가가치 융합 분야(반도체, 바이오) 브랜딩을 선도하는 상호 보완적 생태계 형성.</p>
+                    </div>
+                    
+                    <div class="bg-slate-700/50 p-5 rounded-lg">
+                        <h4 class="font-bold text-blue-300 text-lg mb-2">3. 학문 경계 파괴 및 융합 가속화</h4>
+                        <p class="text-slate-300 text-sm leading-relaxed">화학, 물리, 생명과학을 아우르는 융합 학제로의 개편 보편화. 이차전지/반도체 패권 경쟁 대응을 위한 학제 통합 지속 전망.</p>
+                    </div>
+                    
+                    <div class="bg-slate-700/50 p-5 rounded-lg">
+                        <h4 class="font-bold text-accent text-lg mb-2">4. 국가 전략 자산화</h4>
+                        <p class="text-slate-300 text-sm leading-relaxed">신소재/재료공학 학과는 교육 단위를 넘어 반도체, 에너지 전환, 미래 모빌리티 등 <strong>국가 전략 산업의 성패를 좌우할 핵심 인적 자원 공급망</strong>으로서 가치 증대.</p>
+                    </div>
+                </div>
+            </section>
+            
+        </main>
+    </div>
+
+    <footer class="bg-slate-900 text-slate-400 py-8 text-center text-sm">
+        <p>© 2026 대한민국 대학 신소재 및 재료공학 관련 학과 현황 분석 보고서. All rights reserved.</p>
+    </footer>
+
+    <!-- Chart.js Initialization -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 1. 설립 유형 차트 (도넛)
+            const typeCtx = document.getElementById('typeChart').getContext('2d');
+            new Chart(typeCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['사립 (57.3%)', '국립 (37.3%)', '특별법법인 (2.7%)', '국립대법인 (1.8%)', '공립 (0.9%)'],
+                    datasets: [{
+                        data: [63, 41, 3, 2, 1],
+                        backgroundColor: [
+                            '#3b82f6', // 사립
+                            '#1e3a8a', // 국립
+                            '#f59e0b', // 특별법
+                            '#10b981', // 국립대법인
+                            '#64748b'  // 공립
+                        ],
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                font: { family: "'Noto Sans KR', sans-serif", size: 12 }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // 2. 지역 비중 차트 (파이)
+            const regionCtx = document.getElementById('regionChart').getContext('2d');
+            new Chart(regionCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['수도권 (37.3%)', '비수도권 (62.7%)'],
+                    datasets: [{
+                        data: [41, 69],
+                        backgroundColor: [
+                            '#94a3b8', // 수도권
+                            '#f59e0b'  // 비수도권 (강조)
+                        ],
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                font: { family: "'Noto Sans KR', sans-serif", size: 13 }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
