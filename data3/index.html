@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2025 요일별·시간대별 뺑소니 교통사고 심층 보고서</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- ECharts (데이터 시각화) -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+    
+    <!-- Font Awesome (아이콘) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts (Pretendard 폰트 대용) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        darkbg: '#0f172a', // slate-900
+                        panel: '#1e293b',  // slate-800
+                        accent: '#38bdf8', // sky-400
+                        danger: '#f43f5e', // rose-500
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0f172a;
+            color: #f8fafc;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        /* 스크롤바 커스텀 */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1e293b; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #475569; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #64748b; 
+        }
+
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+            border-radius: 1rem;
+        }
+
+        /* 테이블 스타일링 */
+        table { border-collapse: separate; border-spacing: 0; }
+        th, td { border-bottom: 1px solid rgba(255,255,255,0.05); }
+        th { background: rgba(0,0,0,0.2); }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col p-4 md:p-8">
+
+    <header class="mb-10 text-center md:text-left flex flex-col md:flex-row justify-between items-center gap-4">
+        <div>
+            <div class="inline-block px-3 py-1 rounded-full bg-blue-500/20 text-blue-400 text-sm font-semibold mb-3 border border-blue-500/30">
+                Data Reference: "요일별_시간대별 (뺑소니) 교통사고.pdf"
+            </div>
+            <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight mb-2">2025 뺑소니 교통사고 <span class="text-transparent bg-clip-text bg-gradient-to-r from-accent to-blue-600">심층 분석 보고서</span></h1>
+            <p class="text-slate-400 text-sm md:text-base">전국 요일별 및 시간대별 뺑소니(사고후미조치) 발생 현황 및 트렌드 시각화 대시보드</p>
+        </div>
+        <div class="text-right hidden md:block">
+            <p class="text-sm text-slate-500">생성일자: 2026. 08. 11</p>
+            <p class="text-sm text-slate-500">작성자: 데이터 분석 시스템</p>
+        </div>
+    </header>
+
+    <main class="w-full max-w-7xl mx-auto space-y-6 flex-grow">
+        
+        <!-- KPI Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Total Accidents -->
+            <div class="glass-panel p-6 relative overflow-hidden group">
+                <div class="absolute -right-6 -top-6 text-slate-700/30 group-hover:text-accent/10 transition-colors duration-500">
+                    <i class="fas fa-car-burst text-9xl"></i>
+                </div>
+                <div class="relative z-10">
+                    <h3 class="text-slate-400 font-medium text-lg mb-1">총 발생 건수 (2025)</h3>
+                    <div class="flex items-end gap-3">
+                        <span id="kpi-accidents" class="text-4xl md:text-5xl font-bold text-white">0</span>
+                        <span class="text-slate-400 mb-1">건</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Total Deaths -->
+            <div class="glass-panel p-6 relative overflow-hidden group">
+                <div class="absolute -right-6 -top-6 text-slate-700/30 group-hover:text-danger/10 transition-colors duration-500">
+                    <i class="fas fa-skull text-9xl"></i>
+                </div>
+                <div class="relative z-10">
+                    <h3 class="text-slate-400 font-medium text-lg mb-1">총 사망자 수</h3>
+                    <div class="flex items-end gap-3">
+                        <span id="kpi-deaths" class="text-4xl md:text-5xl font-bold text-danger">0</span>
+                        <span class="text-slate-400 mb-1">명</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Total Injuries -->
+            <div class="glass-panel p-6 relative overflow-hidden group">
+                <div class="absolute -right-6 -top-6 text-slate-700/30 group-hover:text-amber-400/10 transition-colors duration-500">
+                    <i class="fas fa-user-injured text-9xl"></i>
+                </div>
+                <div class="relative z-10">
+                    <h3 class="text-slate-400 font-medium text-lg mb-1">총 부상자 수</h3>
+                    <div class="flex items-end gap-3">
+                        <span id="kpi-injuries" class="text-4xl md:text-5xl font-bold text-amber-400">0</span>
+                        <span class="text-slate-400 mb-1">명</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            
+            <!-- 시간대별 발생 추이 (Line Chart) -->
+            <div class="glass-panel p-6 flex flex-col">
+                <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
+                    <i class="far fa-clock text-accent"></i> 시간대별 발생 추이
+                </h3>
+                <div id="timeTrendChart" class="w-full h-[350px]"></div>
+                <div class="mt-4 text-sm text-slate-400 bg-slate-800/50 p-3 rounded-lg border border-slate-700">
+                    <i class="fas fa-lightbulb text-yellow-400 mr-2"></i>
+                    <strong>인사이트:</strong> 뺑소니 사고는 퇴근 시간 이후인 <strong>18~20시(933건)</strong>에 최고조에 달하며, 야간 시간대 전반에 걸쳐 높은 수치를 기록합니다.
+                </div>
+            </div>
+
+            <!-- 요일별 발생 건수 (Bar Chart) -->
+            <div class="glass-panel p-6 flex flex-col">
+                <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
+                    <i class="far fa-calendar-alt text-purple-400"></i> 요일별 발생 현황
+                </h3>
+                <div id="dayTrendChart" class="w-full h-[350px]"></div>
+                <div class="mt-4 text-sm text-slate-400 bg-slate-800/50 p-3 rounded-lg border border-slate-700">
+                    <i class="fas fa-lightbulb text-yellow-400 mr-2"></i>
+                    <strong>인사이트:</strong> 주중 후반으로 갈수록 사고가 증가하여 <strong>금요일(1,184건)</strong>에 가장 많이 발생합니다. 일요일은 건수 자체는 상대적으로 적으나 새벽 시간대 위험이 큽니다.
+                </div>
+            </div>
+        </div>
+
+        <!-- 요일/시간대별 집중도 (Heatmap) -->
+        <div class="glass-panel p-6">
+            <div class="flex justify-between items-end mb-4">
+                <h3 class="text-xl font-bold flex items-center gap-2">
+                    <i class="fas fa-fire text-danger"></i> 요일 및 시간대별 뺑소니 집중도 (Heatmap)
+                </h3>
+            </div>
+            <div id="heatmapChart" class="w-full h-[400px]"></div>
+            <div class="mt-4 text-sm text-slate-400 bg-slate-800/50 p-3 rounded-lg border border-slate-700">
+                <i class="fas fa-search-location text-accent mr-2"></i>
+                <strong>위험 구역 분석:</strong> 히트맵의 붉은 영역은 사고 다발 구역을 나타냅니다. 금요일 저녁(18-20시)이 182건으로 가장 붉게 표시되며, 토요일 새벽(0-2시) 89건, 일요일 새벽(0-2시) 99건 등 주말 시작 지점의 심야/새벽 뺑소니가 뚜렷한 특징을 보입니다.
+            </div>
+        </div>
+
+        <!-- 상세 데이터 표 -->
+        <div class="glass-panel p-6 overflow-hidden">
+            <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
+                <i class="fas fa-table text-emerald-400"></i> 상세 원본 데이터 표 (2025)
+            </h3>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm text-left text-slate-300">
+                    <thead class="text-xs uppercase bg-slate-800/80 text-slate-400 sticky top-0">
+                        <tr>
+                            <th scope="col" class="px-4 py-3 whitespace-nowrap">구분</th>
+                            <th scope="col" class="px-4 py-3 whitespace-nowrap">합계</th>
+                            <th scope="col" class="px-4 py-3 whitespace-nowrap">0-2시</th>
+                            <th scope="col" class="px-4 py-3 whitespace-nowrap">2-4시</th>
+                            <th scope="col" class="px-4 py-3 whitespace-nowrap">4-6시</th>
+                            <th scope="col" class="px-4 py-3 whitespace-nowrap">6-8시</th>
+                            <th scope="col" class="px-4 py-3 whitespace-nowrap">8-10시</th>
+                            <th scope="col" class="px-4 py-3 whitespace-nowrap">10-12시</th>
+                            <th scope="col" class="px-4 py-3 whitespace-nowrap">12-14시</th>
+                            <th scope="col" class="px-4 py-3 whitespace-nowrap">14-16시</th>
+                            <th scope="col" class="px-4 py-3 whitespace-nowrap">16-18시</th>
+                            <th scope="col" class="px-4 py-3 whitespace-nowrap">18-20시</th>
+                            <th scope="col" class="px-4 py-3 whitespace-nowrap">20-22시</th>
+                            <th scope="col" class="px-4 py-3 whitespace-nowrap">22-24시</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody" class="divide-y divide-slate-700/50">
+                        <!-- Javascript로 데이터 삽입 -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="mt-12 text-center text-slate-500 text-sm pb-8">
+        <p>&copy; 2026 Traffic Accident Analysis Dashboard. Generated strictly from provided reference data.</p>
+    </footer>
+
+    <script>
+        // PDF 원본 데이터 정의
+        const timeLabels = ['0-2', '2-4', '4-6', '6-8', '8-10', '10-12', '12-14', '14-16', '16-18', '18-20', '20-22', '22-24'];
+        
+        const totalData = {
+            accidents: { total: 7279, data: [443, 284, 283, 471, 624, 517, 649, 674, 915, 933, 795, 691] },
+            deaths:    { total: 68,   data: [6, 7, 6, 9, 1, 2, 3, 3, 5, 11, 8, 7] },
+            injuries:  { total: 9631, data: [638, 364, 385, 577, 787, 705, 812, 871, 1181, 1210, 1138, 963] }
+        };
+
+        const dayLabels = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
+        
+        // 데이터 블록 배열 (발생건수, 사망자수, 부상자수)
+        const weeklyData = [
+            // 일요일
+            { 
+                day: '일요일', 
+                accidents: { total: 855, data: [99, 49, 42, 39, 50, 63, 76, 92, 107, 102, 84, 52] },
+                deaths:    { total: 5,   data: [0, 0, 1, 0, 0, 0, 0, 0, 0, 3, 0, 1] },
+                injuries:  { total: 1314, data: [144, 66, 66, 59, 78, 141, 106, 132, 171, 151, 134, 66] }
+            },
+            // 월요일
+            { 
+                day: '월요일', 
+                accidents: { total: 1023, data: [36, 24, 43, 85, 102, 79, 90, 105, 149, 123, 90, 97] },
+                deaths:    { total: 16,   data: [0, 0, 3, 6, 1, 1, 0, 0, 2, 0, 1, 2] },
+                injuries:  { total: 1292, data: [48, 31, 54, 99, 128, 100, 112, 126, 179, 161, 126, 128] }
+            },
+            // 화요일
+            { 
+                day: '화요일', 
+                accidents: { total: 1017, data: [49, 37, 41, 74, 95, 60, 102, 75, 131, 142, 123, 88] },
+                deaths:    { total: 9,    data: [0, 0, 2, 0, 0, 0, 1, 0, 1, 3, 2, 0] },
+                injuries:  { total: 1288, data: [79, 46, 50, 79, 117, 80, 122, 95, 177, 164, 166, 113] }
+            },
+            // 수요일
+            { 
+                day: '수요일', 
+                accidents: { total: 1102, data: [48, 31, 40, 81, 112, 75, 98, 120, 132, 149, 134, 82] },
+                deaths:    { total: 10,   data: [0, 2, 0, 1, 0, 0, 1, 2, 1, 0, 3, 0] },
+                injuries:  { total: 1425, data: [69, 42, 53, 100, 130, 86, 129, 151, 165, 200, 185, 115] }
+            },
+            // 목요일
+            { 
+                day: '목요일', 
+                accidents: { total: 1028, data: [63, 40, 30, 74, 118, 64, 76, 85, 140, 120, 108, 110] },
+                deaths:    { total: 8,    data: [1, 2, 0, 1, 0, 1, 0, 0, 0, 1, 1, 1] },
+                injuries:  { total: 1298, data: [90, 49, 46, 90, 141, 72, 85, 112, 156, 141, 159, 157] }
+            },
+            // 금요일
+            { 
+                day: '금요일', 
+                accidents: { total: 1184, data: [59, 44, 31, 64, 90, 86, 95, 107, 148, 182, 131, 147] },
+                deaths:    { total: 6,    data: [1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 2] },
+                injuries:  { total: 1530, data: [78, 58, 43, 80, 111, 107, 111, 127, 185, 242, 180, 208] }
+            },
+            // 토요일
+            { 
+                day: '토요일', 
+                accidents: { total: 1070, data: [89, 59, 56, 54, 57, 90, 112, 90, 108, 115, 125, 115] },
+                deaths:    { total: 14,   data: [4, 3, 0, 1, 0, 0, 1, 0, 0, 3, 1, 1] },
+                injuries:  { total: 1484, data: [130, 72, 73, 70, 82, 119, 147, 128, 148, 151, 188, 176] }
+            }
+        ];
+
+        // 숫자 애니메이션 함수
+        function animateValue(id, start, end, duration) {
+            if (start === end) return;
+            var range = end - start;
+            var current = start;
+            var increment = end > start ? Math.ceil(range / (duration/16)) : -1;
+            var stepTime = Math.abs(Math.floor(duration / (range/increment)));
+            var obj = document.getElementById(id);
+            var timer = setInterval(function() {
+                current += increment;
+                if ((increment > 0 && current >= end) || (increment < 0 && current <= end)) {
+                    current = end;
+                    clearInterval(timer);
+                }
+                obj.innerHTML = current.toLocaleString();
+            }, stepTime);
+        }
+
+        // 초기화 시 카운트 애니메이션 실행
+        document.addEventListener("DOMContentLoaded", () => {
+            animateValue("kpi-accidents", 0, totalData.accidents.total, 1500);
+            animateValue("kpi-deaths", 0, totalData.deaths.total, 1500);
+            animateValue("kpi-injuries", 0, totalData.injuries.total, 1500);
+            
+            initCharts();
+            renderTable();
+        });
+
+        // 차트 인스턴스 저장용 배열 (리사이즈 처리 위함)
+        let charts = [];
+
+        function initCharts() {
+            // 차트 기본 텍스트 색상
+            const textColor = '#94a3b8'; // slate-400
+            const gridColor = '#334155'; // slate-700
+
+            // 1. 시간대별 추이 차트 (Line)
+            const timeTrendChart = echarts.init(document.getElementById('timeTrendChart'));
+            const timeOption = {
+                tooltip: { trigger: 'axis', backgroundColor: 'rgba(30,41,59,0.9)', textStyle: { color: '#fff' }, borderColor: '#475569' },
+                legend: { data: ['발생건수', '부상자수'], textStyle: { color: textColor }, top: 0 },
+                grid: { left: '3%', right: '4%', bottom: '3%', containLabel: true },
+                xAxis: { type: 'category', boundaryGap: false, data: timeLabels, axisLabel: { color: textColor }, axisLine: { lineStyle: { color: gridColor } } },
+                yAxis: { type: 'value', axisLabel: { color: textColor }, splitLine: { lineStyle: { color: gridColor, type: 'dashed' } } },
+                series: [
+                    {
+                        name: '발생건수',
+                        type: 'line',
+                        smooth: true,
+                        itemStyle: { color: '#38bdf8' },
+                        areaStyle: { color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{ offset: 0, color: 'rgba(56,189,248,0.5)' }, { offset: 1, color: 'rgba(56,189,248,0.05)' }]) },
+                        data: totalData.accidents.data
+                    },
+                    {
+                        name: '부상자수',
+                        type: 'line',
+                        smooth: true,
+                        itemStyle: { color: '#fbbf24' },
+                        areaStyle: { color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{ offset: 0, color: 'rgba(251,191,36,0.5)' }, { offset: 1, color: 'rgba(251,191,36,0.05)' }]) },
+                        data: totalData.injuries.data
+                    }
+                ]
+            };
+            timeTrendChart.setOption(timeOption);
+            charts.push(timeTrendChart);
+
+            // 2. 요일별 발생 현황 차트 (Bar)
+            const dayTrendChart = echarts.init(document.getElementById('dayTrendChart'));
+            const dayAccidentTotals = weeklyData.map(d => d.accidents.total);
+            const dayOption = {
+                tooltip: { trigger: 'axis', backgroundColor: 'rgba(30,41,59,0.9)', textStyle: { color: '#fff' }, borderColor: '#475569' },
+                grid: { left: '3%', right: '4%', bottom: '3%', containLabel: true },
+                xAxis: { type: 'category', data: dayLabels, axisLabel: { color: textColor }, axisLine: { lineStyle: { color: gridColor } } },
+                yAxis: { type: 'value', axisLabel: { color: textColor }, splitLine: { lineStyle: { color: gridColor, type: 'dashed' } } },
+                series: [{
+                    name: '발생건수',
+                    data: dayAccidentTotals,
+                    type: 'bar',
+                    barWidth: '40%',
+                    itemStyle: {
+                        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                            { offset: 0, color: '#818cf8' },
+                            { offset: 1, color: '#4f46e5' }
+                        ]),
+                        borderRadius: [4, 4, 0, 0]
+                    },
+                    label: { show: true, position: 'top', color: '#fff' }
+                }]
+            };
+            dayTrendChart.setOption(dayOption);
+            charts.push(dayTrendChart);
+
+            // 3. 요일 및 시간대별 히트맵 (Heatmap)
+            const heatmapChart = echarts.init(document.getElementById('heatmapChart'));
+            
+            // 데이터 포맷: [x(시간), y(요일), value(건수)]
+            let hmData = [];
+            for (let y = 0; y < dayLabels.length; y++) {
+                for (let x = 0; x < timeLabels.length; x++) {
+                    hmData.push([x, y, weeklyData[y].accidents.data[x]]);
+                }
+            }
+
+            const hmOption = {
+                tooltip: {
+                    position: 'top',
+                    backgroundColor: 'rgba(30,41,59,0.9)',
+                    textStyle: { color: '#fff' },
+                    borderColor: '#475569',
+                    formatter: function (params) {
+                        return `${dayLabels[params.value[1]]} ${timeLabels[params.value[0]]}시<br/><b>${params.value[2]}건</b>`;
+                    }
+                },
+                grid: { left: '3%', right: '4%', bottom: '5%', top: '5%', containLabel: true },
+                xAxis: { type: 'category', data: timeLabels, splitArea: { show: true }, axisLabel: { color: textColor }, axisLine: { lineStyle: { color: gridColor } } },
+                yAxis: { type: 'category', data: dayLabels, splitArea: { show: true }, inverse: true, axisLabel: { color: textColor }, axisLine: { lineStyle: { color: gridColor } } },
+                visualMap: {
+                    min: 0,
+                    max: 200, // 최대치 부근으로 설정하여 대비 향상
+                    calculable: true,
+                    orient: 'horizontal',
+                    left: 'center',
+                    bottom: '0%',
+                    textStyle: { color: textColor },
+                    inRange: {
+                        // 다크테마에 어울리는 색상 (연한 파랑 -> 붉은색)
+                        color: ['#1e293b', '#3b82f6', '#f59e0b', '#ef4444']
+                    }
+                },
+                series: [{
+                    name: '발생건수',
+                    type: 'heatmap',
+                    data: hmData,
+                    label: { show: true, color: '#fff' },
+                    emphasis: { itemStyle: { shadowBlur: 10, shadowColor: 'rgba(0, 0, 0, 0.5)' } }
+                }]
+            };
+            // 히트맵 시각적 조정을 위해 그리드 하단 여백 추가
+            hmOption.grid.bottom = '15%'; 
+            heatmapChart.setOption(hmOption);
+            charts.push(heatmapChart);
+        }
+
+        // 반응형 처리 (윈도우 크기 변경 시 차트 리사이즈)
+        window.addEventListener('resize', function() {
+            charts.forEach(chart => chart.resize());
+        });
+
+        // 원본 테이블 렌더링
+        function renderTable() {
+            const tbody = document.getElementById('tableBody');
+            let html = '';
+
+            // 총계 행 렌더링 헬퍼
+            const createTotalRows = () => {
+                let rows = '';
+                const types = [
+                    { name: '사고건수 (전체)', obj: totalData.accidents, style: 'font-bold text-accent' },
+                    { name: '사망자수 (전체)', obj: totalData.deaths, style: 'text-danger' },
+                    { name: '부상자수 (전체)', obj: totalData.injuries, style: 'text-amber-400' }
+                ];
+                
+                types.forEach((type, idx) => {
+                    let trClass = idx === 2 ? 'border-b-2 border-slate-600 bg-slate-800/30' : 'bg-slate-800/30';
+                    rows += `<tr class="${trClass} hover:bg-slate-700/50 transition-colors">
+                        <td class="px-4 py-3 whitespace-nowrap ${type.style}">${type.name}</td>
+                        <td class="px-4 py-3 font-bold">${type.obj.total.toLocaleString()}</td>
+                        ${type.obj.data.map(val => `<td class="px-4 py-3 text-right">${val.toLocaleString()}</td>`).join('')}
+                    </tr>`;
+                });
+                return rows;
+            };
+
+            // 개별 요일 행 렌더링 헬퍼
+            const createDayRows = (dayData) => {
+                let rows = '';
+                const types = [
+                    { name: `[${dayData.day}] 사고건수`, obj: dayData.accidents, style: 'font-semibold text-slate-200' },
+                    { name: `[${dayData.day}] 사망자수`, obj: dayData.deaths, style: 'text-slate-400' },
+                    { name: `[${dayData.day}] 부상자수`, obj: dayData.injuries, style: 'text-slate-400' }
+                ];
+                
+                types.forEach((type, idx) => {
+                    let trClass = 'hover:bg-slate-800 transition-colors';
+                    if (idx === 2) trClass += ' border-b border-slate-700/50';
+                    
+                    rows += `<tr class="${trClass}">
+                        <td class="px-4 py-2 whitespace-nowrap ${type.style}">${type.name}</td>
+                        <td class="px-4 py-2 font-semibold bg-slate-800/20">${type.obj.total.toLocaleString()}</td>
+                        ${type.obj.data.map(val => `<td class="px-4 py-2 text-right opacity-90">${val.toLocaleString()}</td>`).join('')}
+                    </tr>`;
+                });
+                return rows;
+            };
+
+            // 전체 합계 데이터 삽입
+            html += createTotalRows();
+
+            // 요일별 데이터 삽입
+            weeklyData.forEach(day => {
+                html += createDayRows(day);
+            });
+
+            tbody.innerHTML = html;
+        }
+    </script>
+</body>
+</html>
